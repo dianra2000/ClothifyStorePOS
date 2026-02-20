@@ -1,0 +1,52 @@
+/* Root Styles */
+.root {
+    -fx-font-family: 'Segoe UI', 'Arial', sans-serif;
+}
+
+/* Button Styles */
+.button {
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+}
+
+.button-primary {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+}
+
+.button-primary:hover {
+    -fx-background-color: #2980b9;
+}
+
+.button-danger {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+}
+
+.button-danger:hover {
+    -fx-background-color: #c0392b;
+}
+
+/* Table Styles */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #bdc3c7;
+    -fx-border-radius: 5;
+}
+
+.table-view .column-header {
+    -fx-background-color: #34495e;
+    -fx-text-fill: white;
+}
+
+/* Text Field Styles */
+.text-field, .password-field {
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-color: #bdc3c7;
+    -fx-padding: 8;
+}
+
+.text-field:focused {
+    -fx-border-color: #3498db;
+}
