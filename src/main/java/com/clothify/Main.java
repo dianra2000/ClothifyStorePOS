@@ -1,17 +1,63 @@
 package com.clothify;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import com.clothify.dao.DatabaseConnection;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+public class Main extends Application {
+
+    private double xOffset = 0;
+    private double yOffset = 0;
+
+    @Override
+    public void start(Stage primaryStage) {
+        try {
+            // Load login screen
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
+            Parent root = loader.load();
+
+            // Make window draggable
+            root.setOnMousePressed(event -> {
+                xOffset = event.getSceneX();
+                yOffset = event.getSceneY();
+            });
+
+            root.setOnMouseDragged(event -> {
+                primaryStage.setX(event.getScreenX() - xOffset);
+                primaryStage.setY(event.getScreenY() - yOffset);
+            });
+
+            Scene scene = new Scene(root);
+
+            // Add CSS
+            scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+
+            primaryStage.setTitle("Clothify Store POS - Login");
+            primaryStage.setScene(scene);
+            primaryStage.setResizable(false);
+            primaryStage.initStyle(StageStyle.UNDECORATED);
+            primaryStage.show();
+
+            // Add shutdown hook
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                DatabaseConnection.closePool();
+            }));
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+
+    @Override
+    public void stop() {
+        DatabaseConnection.closePool();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }
