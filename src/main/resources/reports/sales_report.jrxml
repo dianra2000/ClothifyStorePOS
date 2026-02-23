@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.0 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports 
+              http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="sales_report"
+              pageWidth="595"
+              pageHeight="842"
+              columnWidth="535"
+              leftMargin="30"
+              rightMargin="30"
+              topMargin="20"
+              bottomMargin="20"
+              uuid="4a1e2d3c-5b6f-7e8d-9a0b-1c2d3e4f5g6h">
+
+    <!-- ==================== PARAMETERS ==================== -->
+    <parameter name="startDate" class="java.sql.Date">
+        <parameterDescription><![CDATA[Start date for report]]></parameterDescription>
+        <defaultValueExpression><![CDATA[new java.sql.Date(System.currentTimeMillis() - 30L * 24 * 60 * 60 * 1000)]]></defaultValueExpression>
+    </parameter>
+
+    <parameter name="endDate" class="java.sql.Date">
+        <parameterDescription><![CDATA[End date for report]]></parameterDescription>
+        <defaultValueExpression><![CDATA[new java.sql.Date(System.currentTimeMillis())]]></defaultValueExpression>
+    </parameter>
+
+    <parameter name="reportTitle" class="java.lang.String">
+        <defaultValueExpression><![CDATA["Sales Report"]]></defaultValueExpression>
+    </parameter>
+
+    <parameter name="companyName" class="java.lang.String">
+        <defaultValueExpression><![CDATA["Clothify Store"]]></defaultValueExpression>
+    </parameter>
+
+    <parameter name="companyLogo" class="java.lang.String">
+        <defaultValueExpression><![CDATA["/images/logo.png"]]></defaultValueExpression>
+    </parameter>
+
+    <!-- ==================== QUERY STRING ==================== -->
+    <queryString>
+        <![CDATA[
+            SELECT 
+                o.order_id,
+                o.order_number,
+                o.order_date,
+                o.subtotal,
+                o.tax,
+                o.discount,
+                o.total,
+                o.payment_method,
+                o.payment_status,
+                c.customer_id,
+                c.first_name,
+                c.last_name,
+                c.phone,
+                c.email,
+                u.user_id,
+                u.full_name as cashier_name,
+                COUNT(DISTINCT oi.order_item_id) as total_items,
+                SUM(oi.quantity) as total_quantity
+            FROM orders o
+            INNER JOIN customers c ON o.customer_id = c.customer_id
+            INNER JOIN users u ON o.user_id = u.user_id
+            LEFT JOIN order_items oi ON o.order_id = oi.order_id
+            WHERE DATE(o.order_date) BETWEEN $P{startDate} AND $P{endDate}
+                AND o.payment_status = 'paid'
+            GROUP BY o.order_id
+            ORDER BY o.order_date DESC
+        ]]>
+    </queryString>
+
+    <!-- ==================== FIELDS ==================== -->
+    <field name="order_id" class="java.lang.Integer"/>
+    <field name="order_number" class="java.lang.String"/>
+    <field name="order_date" class="java.sql.Timestamp"/>
+    <field name="subtotal" class="java.math.BigDecimal"/>
+    <field name="tax" class="java.math.BigDecimal"/>
+    <field name="discount" class="java.math.BigDecimal"/>
+    <field name="total" class="java.math.BigDecimal"/>
+    <field name="payment_method" class="java.lang.String"/>
+    <field name="payment_status" class="java.lang.String"/>
+    <field name="customer_id" class="java.lang.Integer"/>
+    <field name="first_name" class="java.lang.String"/>
+    <field name="last_name" class="java.lang.String"/>
+    <field name="phone" class="java.lang.String"/>
+    <field name="email" class="java.lang.String"/>
+    <field name="cashier_name" class="java.lang.String"/>
+    <field name="total_items" class="java.lang.Long"/>
+    <field name="total_quantity" class="java.math.BigDecimal"/>
+
+    <!-- ==================== VARIABLES ==================== -->
+    <variable name="customerName" class="java.lang.String">
+        <variableExpression><![CDATA[$F{first_name} + " " + $F{last_name}]]></variableExpression>
+    </variable>
+
+    <variable name="grandSubtotal" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{subtotal}]]></variableExpression>
+    </variable>
+
+    <variable name="grandTax" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{tax}]]></variableExpression>
+    </variable>
+
+    <variable name="grandTotal" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{total}]]></variableExpression>
+    </variable>
+
+    <variable name="totalOrders" class="java.lang.Integer" calculation="Count">
+        <variableExpression><![CDATA[$F{order_id}]]></variableExpression>
+    </variable>
+
+    <!-- ==================== TITLE BAND ==================== -->
+    <title>
+        <band height="80" splitType="Stretch">
+            <!-- Company Logo Placeholder -->
+            <rectangle>
+                <reportElement x="0" y="0" width="80" height="60" uuid="a1b2c3d4-e5f6-7890-1234-567890abcdef"/>
+                <graphicElement>
+                    <box><topPen lineWidth="0.0"/><leftPen lineWidth="0.0"/><bottomPen lineWidth="0.0"/><rightPen lineWidth="0.0"/></box>
+                </graphicElement>
+            </rectangle>
+
+            <!-- Company Name -->
+            <staticText>
+                <reportElement x="90" y="5" width="250" height="20" uuid="b2c3d4e5-f6a7-8901-2345-67890abcdef1"/>
+                <textElement>
+                    <font size="18" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Clothify Store]]></text>
+            </staticText>
+
+            <!-- Report Title -->
+            <staticText>
+                <reportElement x="90" y="25" width="250" height="20" uuid="c3d4e5f6-a7b8-9012-3456-7890abcdef12"/>
+                <textElement>
+                    <font size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[$P{reportTitle}]]></text>
+            </staticText>
+
+            <!-- Date Range -->
+            <staticText>
+                <reportElement x="90" y="45" width="400" height="20" uuid="d4e5f6a7-b8c9-0123-4567-890abcdef123"/>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <text><![CDATA[Period: $P{startDate} to $P{endDate}]]></text>
+            </staticText>
+
+            <!-- Report Date -->
+            <staticText>
+                <reportElement x="430" y="45" width="100" height="20" uuid="e5f6a7b8-c9d0-1234-5678-90abcdef1234"/>
+                <textElement textAlignment="Right">
+                    <font size="10"/>
+                </textElement>
+                <text><![CDATA[Generated: ]]></text>
+            </staticText>
+
+            <textField>
+                <reportElement x="460" y="45" width="70" height="20" uuid="f6a7b8c9-d0e1-2345-6789-0abcdef12345"/>
+                <textElement textAlignment="Right">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date())]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+
+    <!-- ==================== PAGE HEADER ==================== -->
+    <pageHeader>
+        <band height="20" splitType="Stretch">
+            <line>
+                <reportElement x="0" y="0" width="535" height="1" uuid="a7b8c9d0-e1f2-3456-7890-abcdef123456"/>
+            </line>
+            <staticText>
+                <reportElement x="0" y="5" width="80" height="15" uuid="b8c9d0e1-f2a3-4567-890a-bcdef1234567"/>
+                <textElement>
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Order #]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="100" y="5" width="120" height="15" uuid="c9d0e1f2-a3b4-5678-90ab-cdef12345678"/>
+                <textElement>
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Date]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="220" y="5" width="100" height="15" uuid="d0e1f2a3-b4c5-6789-0abc-def123456789"/>
+                <textElement>
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Customer]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="320" y="5" width="50" height="15" uuid="e1f2a3b4-c5d6-7890-abcd-ef1234567890"/>
+                <textElement textAlignment="Right">
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Items]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="370" y="5" width="70" height="15" uuid="f2a3b4c5-d6e7-890a-bcde-f12345678901"/>
+                <textElement textAlignment="Right">
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Subtotal]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="440" y="5" width="70" height="15" uuid="a3b4c5d6-e7f8-90ab-cdef-123456789012"/>
+                <textElement textAlignment="Right">
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Total]]></text>
+            </staticText>
+        </band>
+    </pageHeader>
+
+    <!-- ==================== DETAIL BAND ==================== -->
+    <detail>
+        <band height="20" splitType="Stretch">
+            <textField>
+                <reportElement x="0" y="0" width="80" height="15" uuid="b4c5d6e7-f890-abcd-ef12-345678901234"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{order_number}]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="100" y="0" width="120" height="15" uuid="c5d6e7f8-90ab-cdef-1234-567890123456"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format($F{order_date})]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="220" y="0" width="100" height="15" uuid="d6e7f890-abcd-ef12-3456-789012345678"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$V{customerName}]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="320" y="0" width="50" height="15" uuid="e7f890ab-cdef-1234-5678-901234567890"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$F{total_quantity}]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="370" y="0" width="70" height="15" uuid="f890abcd-ef12-3456-7890-123456789012"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA["$" + $F{subtotal}]]></textFieldExpression>
+            </textField>
+
+            <textField>
+                <reportElement x="440" y="0" width="70" height="15" uuid="90abcdef-1234-5678-9012-345678901234"/>
+                <textElement textAlignment="Right" isBold="true"/>
+                <textFieldExpression><![CDATA["$" + $F{total}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+    <!-- ==================== COLUMN FOOTER ==================== -->
+    <columnFooter>
+        <band height="20" splitType="Stretch">
+            <line>
+                <reportElement x="0" y="0" width="535" height="1" uuid="abcdef12-3456-7890-abcd-ef1234567890"/>
+            </line>
+        </band>
+    </columnFooter>
+
+    <!-- ==================== SUMMARY BAND ==================== -->
+    <summary>
+        <band height="120" splitType="Stretch">
+            <rectangle>
+                <reportElement x="300" y="5" width="235" height="90" uuid="bcdef123-4567-890a-bcde-f12345678901"/>
+                <graphicElement>
+                    <pen lineWidth="1.0"/>
+                    <box><topPen lineWidth="0.5"/><leftPen lineWidth="0.5"/><bottomPen lineWidth="0.5"/><rightPen lineWidth="0.5"/></box>
+                </graphicElement>
+            </rectangle>
+
+            <!-- Summary Title -->
+            <staticText>
+                <reportElement x="305" y="10" width="100" height="15" uuid="cdef1234-5678-90ab-cdef-123456789012"/>
+                <textElement>
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Summary]]></text>
+            </staticText>
+
+            <!-- Total Orders -->
+            <staticText>
+                <reportElement x="305" y="30" width="80" height="15" uuid="def12345-6789-0abc-def1-234567890123"/>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <text><![CDATA[Total Orders:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="450" y="30" width="80" height="15" uuid="ef123456-7890-abcd-ef12-345678901234"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$V{totalOrders}]]></textFieldExpression>
+            </textField>
+
+            <!-- Total Subtotal -->
+            <staticText>
+                <reportElement x="305" y="45" width="80" height="15" uuid="f1234567-890a-bcde-f123-456789012345"/>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <text><![CDATA[Subtotal:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="450" y="45" width="80" height="15" uuid="12345678-90ab-cdef-1234-567890123456"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA["$" + $V{grandSubtotal}]]></textFieldExpression>
+            </textField>
+
+            <!-- Total Tax -->
+            <staticText>
+                <reportElement x="305" y="60" width="80" height="15" uuid="23456789-0abc-def1-2345-678901234567"/>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <text><![CDATA[Tax:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="450" y="60" width="80" height="15" uuid="34567890-abcd-ef12-3456-789012345678"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA["$" + $V{grandTax}]]></textFieldExpression>
+            </textField>
+
+            <!-- Grand Total -->
+            <staticText>
+                <reportElement x="305" y="75" width="80" height="15" uuid="4567890a-bcde-f123-4567-890123456789"/>
+                <textElement>
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[GRAND TOTAL:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="450" y="75" width="80" height="15" uuid="567890ab-cdef-1234-5678-901234567890"/>
+                <textElement textAlignment="Right">
+                    <font size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["$" + $V{grandTotal}]]></textFieldExpression>
+            </textField>
+
+            <!-- Footer Note -->
+            <staticText>
+                <reportElement x="0" y="105" width="535" height="15" uuid="67890abc-def1-2345-6789-012345678901"/>
+                <textElement textAlignment="Center">
+                    <font size="9" isItalic="true"/>
+                </textElement>
+                <text><![CDATA[Thank you for choosing Clothify Store. This is a computer generated report.]]></text>
+            </staticText>
+        </band>
+    </summary>
+
+    <!-- ==================== PAGE FOOTER ==================== -->
+    <pageFooter>
+        <band height="20" splitType="Stretch">
+            <line>
+                <reportElement x="0" y="0" width="535" height="1" uuid="7890abcd-ef12-3456-7890-123456789012"/>
+            </line>
+            <textField>
+                <reportElement x="0" y="5" width="200" height="15" uuid="890abcde-f123-4567-8901-234567890123"/>
+                <textElement>
+                    <font size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER} + " of "]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="100" y="5" width="100" height="15" uuid="90abcdef-1234-5678-9012-345678901234"/>
+                <textElement>
+                    <font size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+            <textField evaluationTime="Report">
+                <reportElement x="435" y="5" width="100" height="15" uuid="abcdef12-3456-7890-abcd-ef1234567890"/>
+                <textElement textAlignment="Right">
+                    <font size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Clothify Store POS"]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+
+</jasperReport>
