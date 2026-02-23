@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="15" xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.clothify.controller.OrderController">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20" />
+    </padding>
+
+    <!-- Header with Title and Stats -->
+    <HBox alignment="CENTER_LEFT">
+        <VBox>
+            <Label text="Order Management" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+            <Label text="Process customer orders and track sales" style="-fx-text-fill: #7f8c8d;" />
+        </VBox>
+        <Region HBox.hgrow="ALWAYS" />
+        <HBox spacing="20" alignment="CENTER_RIGHT">
+            <Label fx:id="todaySalesLabel" style="-fx-font-weight: bold; -fx-text-fill: #27ae60;" />
+            <Label fx:id="todayOrdersLabel" style="-fx-font-weight: bold; -fx-text-fill: #3498db;" />
+        </HBox>
+    </HBox>
+
+    <Separator />
+
+    <!-- Main Content -->
+    <SplitPane dividerPositions="0.6" VBox.vgrow="ALWAYS">
+
+        <!-- Left Side: Order Entry -->
+        <VBox spacing="15">
+            <padding><Insets right="10" /></padding>
+
+            <!-- Customer Selection -->
+            <TitledPane text="1. Select Customer" expanded="true">
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <ComboBox fx:id="customerCombo" promptText="Select Customer" HBox.hgrow="ALWAYS" />
+                    <Button fx:id="newCustomerButton" text="New Customer" onAction="#handleNewCustomer"
+                            style="-fx-background-color: #27ae60; -fx-text-fill: white;" />
+                </HBox>
+            </TitledPane>
+
+            <!-- Product Selection -->
+            <TitledPane text="2. Add Products" expanded="true">
+                <GridPane hgap="10" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="100" />
+                        <ColumnConstraints minWidth="200" />
+                        <ColumnConstraints minWidth="80" />
+                        <ColumnConstraints minWidth="100" />
+                    </columnConstraints>
+
+                    <Label text="Product:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                    <ComboBox fx:id="productCombo" promptText="Search product..."
+                              GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.columnSpan="2" />
+
+                    <Label text="Quantity:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                    <TextField fx:id="quantityField" promptText="1" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                    <Button fx:id="addItemButton" text="Add to Cart" onAction="#handleAddItem"
+                            style="-fx-background-color: #3498db; -fx-text-fill: white;"
+                            GridPane.rowIndex="1" GridPane.columnIndex="3" />
+                </GridPane>
+            </TitledPane>
+
+            <!-- Cart Table -->
+            <TitledPane text="3. Shopping Cart" expanded="true">
+                <VBox spacing="10">
+                    <TableView fx:id="cartTable" prefHeight="200">
+                        <columns>
+                            <TableColumn fx:id="colProduct" text="Product" prefWidth="200" />
+                            <TableColumn fx:id="colPrice" text="Price" prefWidth="80" />
+                            <TableColumn fx:id="colQty" text="Qty" prefWidth="60" />
+                            <TableColumn fx:id="colSubtotal" text="Subtotal" prefWidth="100" />
+                            <TableColumn fx:id="colAction" text="Action" prefWidth="80" />
+                        </columns>
+                    </TableView>
+
+                    <!-- Totals -->
+                    <GridPane hgap="10" vgap="5" alignment="CENTER_RIGHT">
+                        <columnConstraints>
+                            <ColumnConstraints minWidth="100" />
+                            <ColumnConstraints minWidth="100" />
+                        </columnConstraints>
+
+                        <Label text="Subtotal:" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold;" />
+                        <Label fx:id="subtotalLabel" text="$0.00" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+
+                        <Label text="Tax (10%):" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;" />
+                        <Label fx:id="taxLabel" text="$0.00" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+
+                        <Label text="Total:" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
+                        <Label fx:id="totalLabel" text="$0.00" GridPane.rowIndex="2" GridPane.columnIndex="1"
+                               style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #27ae60;" />
+                    </GridPane>
+                </VBox>
+            </TitledPane>
+
+            <!-- Payment -->
+            <TitledPane text="4. Payment" expanded="true">
+                <GridPane hgap="10" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="100" />
+                        <ColumnConstraints minWidth="200" />
+                    </columnConstraints>
+
+                    <Label text="Payment Method:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                    <ComboBox fx:id="paymentMethodCombo" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+
+                    <Label text="Notes:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                    <TextArea fx:id="notesArea" promptText="Optional notes..." prefRowCount="2"
+                              GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                </GridPane>
+            </TitledPane>
+
+            <!-- Action Buttons -->
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Button fx:id="clearCartButton" text="Clear Cart" onAction="#handleClearCart"
+                        style="-fx-background-color: #e74c3c; -fx-text-fill: white;" />
+                <Button fx:id="processOrderButton" text="Process Order" onAction="#handleProcessOrder"
+                        style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 150px;" />
+            </HBox>
+        </VBox>
+
+        <!-- Right Side: Order History -->
+        <VBox spacing="15">
+            <padding><Insets left="10" /></padding>
+            <Label text="Recent Orders" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+            <TableView fx:id="orderTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colOrderNo" text="Order #" prefWidth="80" />
+                    <TableColumn fx:id="colCustomer" text="Customer" prefWidth="120" />
+                    <TableColumn fx:id="colDateTime" text="Date/Time" prefWidth="130" />
+                    <TableColumn fx:id="colAmount" text="Amount" prefWidth="80" />
+                    <TableColumn fx:id="colStatus" text="Status" prefWidth="80" />
+                </columns>
+            </TableView>
+        </VBox>
+    </SplitPane>
+
+    <!-- Status Bar -->
+    <HBox style="-fx-background-color: #ecf0f1; -fx-padding: 5;" alignment="CENTER_LEFT">
+        <Label text="Order Processing System - " />
+        <Label text="Ready" style="-fx-font-weight: bold;" />
+    </HBox>
+
+</VBox>
