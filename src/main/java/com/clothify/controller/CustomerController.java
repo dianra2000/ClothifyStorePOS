@@ -1,73 +1,78 @@
 package com.clothify.controller;
 
-import com.clothify.dao.CustomerDAO;
-import com.clothify.model.Customer;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import com.clothify.dao.CustomerDAO;
+import com.clothify.model.Customer;
+
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class CustomerController implements Initializable {
 
-    @FXML private TextField searchField;
-    @FXML private TextField firstNameField;
-    @FXML private TextField lastNameField;
-    @FXML private TextField phoneField;
-    @FXML private TextField emailField;
-    @FXML private TextArea addressArea;
-    @FXML private TextField loyaltyPointsField;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private TextField firstNameField;
+    @FXML
+    private TextField lastNameField;
+    @FXML
+    private TextField phoneField;
+    @FXML
+    private TextField emailField;
+    @FXML
+    private TextArea addressArea;
+    @FXML
+    private TextField cityField;
+    @FXML
+    private TextField loyaltyPointsField;
 
-    @FXML private TableView<Customer> customerTable;
-    @FXML private TableColumn<Customer, String> colCode;
-    @FXML private TableColumn<Customer, String> colName;
-    @FXML private TableColumn<Customer, String> colPhone;
-    @FXML private TableColumn<Customer, String> colEmail;
-    @FXML private TableColumn<Customer, Integer> colPoints;
+    @FXML
+    private TableView<Customer> customerTable;
+    @FXML
+    private TableColumn<Customer, String> colCode;
+    @FXML
+    private TableColumn<Customer, String> colName;
+    @FXML
+    private TableColumn<Customer, String> colPhone;
+    @FXML
+    private TableColumn<Customer, String> colEmail;
+    @FXML
+    private TableColumn<Customer, String> colCity;
+    @FXML
+    private TableColumn<Customer, Integer> colPoints;
 
-    @FXML private Button addButton;
-    @FXML private Button updateButton;
-    @FXML private Button deleteButton;
-    @FXML private Button clearButton;
+    @FXML
+    private Button addButton;
+    @FXML
+    private Button updateButton;
+    @FXML
+    private Button deleteButton;
+    @FXML
+    private Button clearButton;
 
     private CustomerDAO customerDAO = new CustomerDAO();
     private ObservableList<Customer> customerList;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Setup table columns
+        setupTableColumns();
+        loadCustomers();
+        setupListeners();
+    }
+
+    private void setupTableColumns() {
         colCode.setCellValueFactory(new PropertyValueFactory<>("customerCode"));
-        colName.setCellValueFactory(cellData ->
-                new javafx.beans.property.SimpleStringProperty(cellData.getValue().getFullName()));
+        colName.setCellValueFactory(
+                cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getFullName()));
         colPhone.setCellValueFactory(new PropertyValueFactory<>("phone"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+        colCity.setCellValueFactory(new PropertyValueFactory<>("city"));
         colPoints.setCellValueFactory(new PropertyValueFactory<>("loyaltyPoints"));
-
-        // Load data
-        loadCustomers();
-
-        // Add listener for table selection
-        customerTable.getSelectionModel().selectedItemProperty().addListener(
-                (obs, oldSelection, newSelection) -> {
-                    if (newSelection != null) {
-                        displayCustomerDetails(newSelection);
-                    }
-                });
-
-        // Search functionality
-        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal.isEmpty()) {
-                loadCustomers();
-            } else {
-                searchCustomers(newVal);
-            }
-        });
-
-        // Enable/disable buttons based on selection
-        updateButton.setDisable(true);
-        deleteButton.setDisable(true);
     }
 
     private void loadCustomers() {
@@ -75,9 +80,26 @@ public class CustomerController implements Initializable {
         customerTable.setItems(customerList);
     }
 
-    private void searchCustomers(String searchTerm) {
-        ObservableList<Customer> searchResults = customerDAO.searchCustomers(searchTerm);
-        customerTable.setItems(searchResults);
+    private void setupListeners() {
+        customerTable.getSelectionModel().selectedItemProperty().addListener(
+                (obs, oldSelection, newSelection) -> {
+                    if (newSelection != null) {
+                        displayCustomerDetails(newSelection);
+                        updateButton.setDisable(false);
+                        deleteButton.setDisable(false);
+                    }
+                });
+
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal.isEmpty()) {
+                customerTable.setItems(customerList);
+            } else {
+                customerTable.setItems(customerDAO.searchCustomers(newVal));
+            }
+        });
+
+        updateButton.setDisable(true);
+        deleteButton.setDisable(true);
     }
 
     private void displayCustomerDetails(Customer customer) {
@@ -86,16 +108,14 @@ public class CustomerController implements Initializable {
         phoneField.setText(customer.getPhone());
         emailField.setText(customer.getEmail());
         addressArea.setText(customer.getAddress());
+        cityField.setText(customer.getCity());
         loyaltyPointsField.setText(String.valueOf(customer.getLoyaltyPoints()));
-
-        updateButton.setDisable(false);
-        deleteButton.setDisable(false);
-        addButton.setDisable(false);
     }
 
     @FXML
     private void handleAdd() {
-        if (!validateInputs()) return;
+        if (!validateInputs())
+            return;
 
         Customer customer = new Customer();
         customer.setFirstName(firstNameField.getText().trim());
@@ -103,6 +123,7 @@ public class CustomerController implements Initializable {
         customer.setPhone(phoneField.getText().trim());
         customer.setEmail(emailField.getText().trim());
         customer.setAddress(addressArea.getText().trim());
+        customer.setCity(cityField.getText().trim());
         customer.setLoyaltyPoints(0);
 
         boolean success = customerDAO.addCustomer(customer);
@@ -124,13 +145,15 @@ public class CustomerController implements Initializable {
             return;
         }
 
-        if (!validateInputs()) return;
+        if (!validateInputs())
+            return;
 
         selected.setFirstName(firstNameField.getText().trim());
         selected.setLastName(lastNameField.getText().trim());
         selected.setPhone(phoneField.getText().trim());
         selected.setEmail(emailField.getText().trim());
         selected.setAddress(addressArea.getText().trim());
+        selected.setCity(cityField.getText().trim());
 
         boolean success = customerDAO.updateCustomer(selected);
 
@@ -151,11 +174,13 @@ public class CustomerController implements Initializable {
             return;
         }
 
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                "Are you sure you want to delete " + selected.getFullName() + "?",
-                ButtonType.YES, ButtonType.NO);
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirm Delete");
+        confirm.setHeaderText("Delete Customer");
+        confirm.setContentText("Are you sure you want to delete " + selected.getFullName() + "?");
 
-        if (confirm.showAndWait().get() == ButtonType.YES) {
+        Optional<ButtonType> result = confirm.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             boolean success = customerDAO.deleteCustomer(selected.getCustomerId());
 
             if (success) {
@@ -179,12 +204,12 @@ public class CustomerController implements Initializable {
         phoneField.clear();
         emailField.clear();
         addressArea.clear();
+        cityField.clear();
         loyaltyPointsField.clear();
 
         customerTable.getSelectionModel().clearSelection();
         updateButton.setDisable(true);
         deleteButton.setDisable(true);
-        addButton.setDisable(false);
     }
 
     private boolean validateInputs() {

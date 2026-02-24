@@ -10,14 +10,16 @@ public class Customer {
     private String phone;
     private String email;
     private String address;
+    private String city;
     private int loyaltyPoints;
     private LocalDateTime createdAt;
 
     // Constructors
-    public Customer() {}
+    public Customer() {
+    }
 
     public Customer(int customerId, String customerCode, String firstName, String lastName,
-                    String phone, String email, String address) {
+            String phone, String email, String address, String city) {
         this.customerId = customerId;
         this.customerCode = customerCode;
         this.firstName = firstName;
@@ -25,39 +27,95 @@ public class Customer {
         this.phone = phone;
         this.email = email;
         this.address = address;
+        this.city = city;
         this.loyaltyPoints = 0;
         this.createdAt = LocalDateTime.now();
     }
 
     // Getters and Setters
-    public int getCustomerId() { return customerId; }
-    public void setCustomerId(int customerId) { this.customerId = customerId; }
+    public int getCustomerId() {
+        return customerId;
+    }
 
-    public String getCustomerCode() { return customerCode; }
-    public void setCustomerCode(String customerCode) { this.customerCode = customerCode; }
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
 
-    public String getFirstName() { return firstName; }
-    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public String getCustomerCode() {
+        return customerCode;
+    }
 
-    public String getLastName() { return lastName; }
-    public void setLastName(String lastName) { this.lastName = lastName; }
+    public void setCustomerCode(String customerCode) {
+        this.customerCode = customerCode;
+    }
 
-    public String getFullName() { return firstName + " " + lastName; }
+    public String getFirstName() {
+        return firstName;
+    }
 
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getLastName() {
+        return lastName;
+    }
 
-    public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-    public int getLoyaltyPoints() { return loyaltyPoints; }
-    public void setLoyaltyPoints(int loyaltyPoints) { this.loyaltyPoints = loyaltyPoints; }
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public int getLoyaltyPoints() {
+        return loyaltyPoints;
+    }
+
+    public void setLoyaltyPoints(int loyaltyPoints) {
+        this.loyaltyPoints = loyaltyPoints;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
     @Override
     public String toString() {

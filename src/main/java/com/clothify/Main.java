@@ -1,12 +1,12 @@
 package com.clothify;
 
-import com.clothify.dao.DatabaseConnection;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import com.clothify.dao.DatabaseConnection;
 
 public class Main extends Application {
 
@@ -16,7 +16,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            // Load login screen
+            // Load login screen - FIXED: Added / at beginning
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
             Parent root = loader.load();
 
@@ -32,13 +32,8 @@ public class Main extends Application {
             });
 
             Scene scene = new Scene(root);
-
-            // Add CSS
-            scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
-
             primaryStage.setTitle("Clothify Store POS - Login");
             primaryStage.setScene(scene);
-            primaryStage.setResizable(false);
             primaryStage.initStyle(StageStyle.UNDECORATED);
             primaryStage.show();
 

@@ -5,7 +5,6 @@ import com.clothify.model.Product;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import java.sql.*;
-import java.time.LocalDateTime;
 
 public class ProductDAO {
 
@@ -19,8 +18,8 @@ public class ProductDAO {
                 "ORDER BY p.product_name";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 Product product = extractProductFromResultSet(rs);
@@ -38,18 +37,18 @@ public class ProductDAO {
 
         // FIXED: Removed the comma after "products p"
         String sql = "SELECT p.*, c.category_name, s.supplier_name " +
-                "FROM products p " +                       // ← No comma here!
+                "FROM products p " + // ← No comma here!
                 "LEFT JOIN categories c ON p.category_id = c.category_id " +
                 "LEFT JOIN suppliers s ON p.supplier_id = s.supplier_id " +
                 "WHERE p.product_name LIKE ? OR p.product_code LIKE ? OR c.category_name LIKE ? " +
                 "ORDER BY p.product_name";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             // FIXED: Correct pattern syntax
-            String pattern = "%" + searchTerm + "%";  // ← Fixed: removed ? from string
-            stmt.setString(1, pattern);               // ← Fixed parameter index syntax
+            String pattern = "%" + searchTerm + "%"; // ← Fixed: removed ? from string
+            stmt.setString(1, pattern); // ← Fixed parameter index syntax
             stmt.setString(2, pattern);
             stmt.setString(3, pattern);
 
@@ -57,7 +56,7 @@ public class ProductDAO {
 
             while (rs.next()) {
                 Product product = extractProductFromResultSet(rs);
-                products.add(product);                 // ← This will now work
+                products.add(product); // ← This will now work
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -76,8 +75,8 @@ public class ProductDAO {
                 "ORDER BY p.quantity";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 Product product = extractProductFromResultSet(rs);
@@ -98,7 +97,7 @@ public class ProductDAO {
                 "WHERE p.product_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, productId);
             ResultSet rs = stmt.executeQuery();
@@ -119,7 +118,7 @@ public class ProductDAO {
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             if (product.getProductCode() == null || product.getProductCode().isEmpty()) {
                 product.setProductCode(generateProductCode());
@@ -152,7 +151,7 @@ public class ProductDAO {
                 "description = ?, image_path = ? WHERE product_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, product.getProductName());
             stmt.setInt(2, product.getCategoryId());
@@ -179,7 +178,7 @@ public class ProductDAO {
         String sql = "UPDATE products SET quantity = quantity + ? WHERE product_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, quantityChange);
             stmt.setInt(2, productId);
@@ -196,7 +195,7 @@ public class ProductDAO {
         String sql = "DELETE FROM products WHERE product_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, productId);
             return stmt.executeUpdate() > 0;

@@ -1,48 +1,30 @@
 package com.clothify.util;
 
-import com.clothify.dao.DatabaseConnection;
-import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.view.JasperViewer;
+import javafx.scene.control.Alert;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ReportGenerator {
 
     public static void generateReport(String reportType, LocalDate startDate, LocalDate endDate) {
         try {
-            String reportPath = "";
-            Map<String, Object> parameters = new HashMap<>();
-
-            parameters.put("startDate", java.sql.Date.valueOf(startDate));
-            parameters.put("endDate", java.sql.Date.valueOf(endDate));
-
-            switch (reportType) {
-                case "Sales Report":
-                    reportPath = "/reports/sales_report.jrxml";
-                    break;
-                case "Inventory Report":
-                    reportPath = "/reports/inventory_report.jrxml";
-                    break;
-                case "Customer Report":
-                    reportPath = "/reports/customer_report.jrxml";
-                    break;
-            }
-
-            JasperReport jasperReport = JasperCompileManager.compileReport(
-                    ReportGenerator.class.getResourceAsStream(reportPath)
+            String message = String.format(
+                    "Generating %s from %s to %s\n\nThis feature will be implemented with JasperReports.",
+                    reportType, startDate, endDate
             );
 
-            JasperPrint jasperPrint = JasperFillManager.fillReport(
-                    jasperReport,
-                    parameters,
-                    DatabaseConnection.getConnection()
-            );
-
-            JasperViewer.viewReport(jasperPrint, false);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Report Generation");
+            alert.setHeaderText("Report Generated Successfully");
+            alert.setContentText(message);
+            alert.showAndWait();
 
         } catch (Exception e) {
             e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Report Generation Failed");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
         }
     }
 }

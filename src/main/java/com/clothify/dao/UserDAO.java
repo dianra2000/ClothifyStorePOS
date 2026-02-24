@@ -26,6 +26,33 @@ public class UserDAO {
                 user.setPassword(rs.getString("password"));
                 user.setFullName(rs.getString("full_name"));
                 user.setEmail(rs.getString("email"));
+                user.setPhone(rs.getString("phone"));
+                user.setRole(rs.getString("role"));
+                return user;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Get user by ID
+    public User getUserById(int userId) {
+        String sql = "SELECT * FROM users WHERE user_id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                User user = new User();
+                user.setUserId(rs.getInt("user_id"));
+                user.setUsername(rs.getString("username"));
+                user.setFullName(rs.getString("full_name"));
+                user.setEmail(rs.getString("email"));
+                user.setPhone(rs.getString("phone"));
                 user.setRole(rs.getString("role"));
                 return user;
             }
@@ -50,6 +77,7 @@ public class UserDAO {
                 user.setUsername(rs.getString("username"));
                 user.setFullName(rs.getString("full_name"));
                 user.setEmail(rs.getString("email"));
+                user.setPhone(rs.getString("phone"));
                 user.setRole(rs.getString("role"));
                 users.add(user);
             }
@@ -61,7 +89,7 @@ public class UserDAO {
 
     // Add user
     public boolean addUser(User user) {
-        String sql = "INSERT INTO users (username, password, full_name, email, role) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (username, password, full_name, email, phone, role) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -70,7 +98,8 @@ public class UserDAO {
             stmt.setString(2, user.getPassword());
             stmt.setString(3, user.getFullName());
             stmt.setString(4, user.getEmail());
-            stmt.setString(5, user.getRole());
+            stmt.setString(5, user.getPhone());
+            stmt.setString(6, user.getRole());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -81,15 +110,16 @@ public class UserDAO {
 
     // Update user
     public boolean updateUser(User user) {
-        String sql = "UPDATE users SET full_name = ?, email = ?, role = ? WHERE user_id = ?";
+        String sql = "UPDATE users SET full_name = ?, email = ?, phone = ?, role = ? WHERE user_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, user.getFullName());
             stmt.setString(2, user.getEmail());
-            stmt.setString(3, user.getRole());
-            stmt.setInt(4, user.getUserId());
+            stmt.setString(3, user.getPhone());
+            stmt.setString(4, user.getRole());
+            stmt.setInt(5, user.getUserId());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {

@@ -1,10 +1,9 @@
 package com.clothify.dao;
 
-import com.clothify.model.Customer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import com.clothify.model.Customer;
 import java.sql.*;
-import java.time.LocalDateTime;
 
 public class CustomerDAO {
 
@@ -26,8 +25,8 @@ public class CustomerDAO {
                 customer.setPhone(rs.getString("phone"));
                 customer.setEmail(rs.getString("email"));
                 customer.setAddress(rs.getString("address"));
+                customer.setCity(rs.getString("city"));
                 customer.setLoyaltyPoints(rs.getInt("loyalty_points"));
-
                 customers.add(customer);
             }
         } catch (SQLException e) {
@@ -61,6 +60,7 @@ public class CustomerDAO {
                 customer.setPhone(rs.getString("phone"));
                 customer.setEmail(rs.getString("email"));
                 customer.setAddress(rs.getString("address"));
+                customer.setCity(rs.getString("city"));
                 customer.setLoyaltyPoints(rs.getInt("loyalty_points"));
                 customers.add(customer);
             }
@@ -70,14 +70,42 @@ public class CustomerDAO {
         return customers;
     }
 
-    // Add customer
-    public boolean addCustomer(Customer customer) {
-        String sql = "INSERT INTO customers (customer_code, first_name, last_name, phone, email, address, loyalty_points) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    // Get customer by ID
+    public Customer getCustomerById(int customerId) {
+        String sql = "SELECT * FROM customers WHERE customer_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            // Generate customer code if not set
+            stmt.setInt(1, customerId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Customer customer = new Customer();
+                customer.setCustomerId(rs.getInt("customer_id"));
+                customer.setCustomerCode(rs.getString("customer_code"));
+                customer.setFirstName(rs.getString("first_name"));
+                customer.setLastName(rs.getString("last_name"));
+                customer.setPhone(rs.getString("phone"));
+                customer.setEmail(rs.getString("email"));
+                customer.setAddress(rs.getString("address"));
+                customer.setCity(rs.getString("city"));
+                customer.setLoyaltyPoints(rs.getInt("loyalty_points"));
+                return customer;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Add customer
+    public boolean addCustomer(Customer customer) {
+        String sql = "INSERT INTO customers (customer_code, first_name, last_name, phone, email, address, city, loyalty_points) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             if (customer.getCustomerCode() == null || customer.getCustomerCode().isEmpty()) {
                 customer.setCustomerCode(generateCustomerCode());
             }
@@ -88,7 +116,8 @@ public class CustomerDAO {
             stmt.setString(4, customer.getPhone());
             stmt.setString(5, customer.getEmail());
             stmt.setString(6, customer.getAddress());
-            stmt.setInt(7, customer.getLoyaltyPoints());
+            stmt.setString(7, customer.getCity());
+            stmt.setInt(8, customer.getLoyaltyPoints());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -99,7 +128,7 @@ public class CustomerDAO {
 
     // Update customer
     public boolean updateCustomer(Customer customer) {
-        String sql = "UPDATE customers SET first_name = ?, last_name = ?, phone = ?, email = ?, address = ?, loyalty_points = ? WHERE customer_id = ?";
+        String sql = "UPDATE customers SET first_name = ?, last_name = ?, phone = ?, email = ?, address = ?, city = ?, loyalty_points = ? WHERE customer_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -109,8 +138,9 @@ public class CustomerDAO {
             stmt.setString(3, customer.getPhone());
             stmt.setString(4, customer.getEmail());
             stmt.setString(5, customer.getAddress());
-            stmt.setInt(6, customer.getLoyaltyPoints());
-            stmt.setInt(7, customer.getCustomerId());
+            stmt.setString(6, customer.getCity());
+            stmt.setInt(7, customer.getLoyaltyPoints());
+            stmt.setInt(8, customer.getCustomerId());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -134,20 +164,25 @@ public class CustomerDAO {
         }
     }
 
-    // Generate unique customer code
-    private String generateCustomerCode() {
-        String sql = "SELECT COUNT(*) FROM customers";
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+    // Update loyalty points
+    public boolean updateLoyaltyPoints(int customerId, int points) {
+        String sql = "UPDATE customers SET loyalty_points = loyalty_points + ? WHERE customer_id = ?";
 
-            if (rs.next()) {
-                int count = rs.getInt(1) + 1;
-                return String.format("CUST%04d", count);
-            }
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, points);
+            stmt.setInt(2, customerId);
+
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
+    }
+
+    // Generate customer code
+    private String generateCustomerCode() {
         return "CUST" + System.currentTimeMillis();
     }
 }

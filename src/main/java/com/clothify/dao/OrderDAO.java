@@ -1,10 +1,9 @@
 package com.clothify.dao;
 
-import com.clothify.model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import com.clothify.model.*;
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,8 +12,6 @@ public class OrderDAO {
     private ProductDAO productDAO = new ProductDAO();
     private CustomerDAO customerDAO = new CustomerDAO();
     private UserDAO userDAO = new UserDAO();
-
-    // ==================== CREATE OPERATIONS ====================
 
     // Create new order
     public boolean createOrder(Order order) {
@@ -25,19 +22,11 @@ public class OrderDAO {
 
         try {
             conn = DatabaseConnection.getConnection();
-            conn.setAutoCommit(false); // Start transaction
+            conn.setAutoCommit(false);
 
-            // Insert order
-            String orderSql = "INSERT INTO orders (order_number, customer_id, user_id, order_date, " +
-                    "subtotal, tax, discount, total, payment_method, payment_status, notes) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            String orderSql = "INSERT INTO orders (order_number, customer_id, user_id, order_date, subtotal, tax, discount, total, payment_method, payment_status, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             orderStmt = conn.prepareStatement(orderSql, Statement.RETURN_GENERATED_KEYS);
-
-            // Generate order number if not set
-            if (order.getOrderNumber() == null || order.getOrderNumber().isEmpty()) {
-                order.setOrderNumber(generateOrderNumber());
-            }
 
             orderStmt.setString(1, order.getOrderNumber());
             orderStmt.setInt(2, order.getCustomer().getCustomerId());
@@ -58,7 +47,6 @@ public class OrderDAO {
                 return false;
             }
 
-            // Get generated order ID
             generatedKeys = orderStmt.getGeneratedKeys();
             if (generatedKeys.next()) {
                 order.setOrderId(generatedKeys.getInt(1));
@@ -67,9 +55,7 @@ public class OrderDAO {
                 return false;
             }
 
-            // Insert order items
-            String itemSql = "INSERT INTO order_items (order_id, product_id, quantity, price, subtotal) " +
-                    "VALUES (?, ?, ?, ?, ?)";
+            String itemSql = "INSERT INTO order_items (order_id, product_id, quantity, price, subtotal) VALUES (?, ?, ?, ?, ?)";
             itemStmt = conn.prepareStatement(itemSql);
 
             for (OrderItem item : order.getItems()) {
@@ -80,34 +66,31 @@ public class OrderDAO {
                 itemStmt.setDouble(5, item.getSubtotal());
                 itemStmt.addBatch();
 
-                // Update product stock
                 productDAO.updateStock(item.getProduct().getProductId(), -item.getQuantity());
             }
 
             itemStmt.executeBatch();
-            conn.commit(); // Commit transaction
-
-            // Update customer loyalty points (optional)
-            if (order.getCustomer() != null) {
-                int points = (int) (order.getTotal() / 10); // 1 point per $10 spent
-                customerDAO.updateLoyaltyPoints(order.getCustomer().getCustomerId(), points);
-            }
+            conn.commit();
 
             return true;
 
         } catch (SQLException e) {
             e.printStackTrace();
             try {
-                if (conn != null) conn.rollback();
+                if (conn != null)
+                    conn.rollback();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
             return false;
         } finally {
             try {
-                if (generatedKeys != null) generatedKeys.close();
-                if (orderStmt != null) orderStmt.close();
-                if (itemStmt != null) itemStmt.close();
+                if (generatedKeys != null)
+                    generatedKeys.close();
+                if (orderStmt != null)
+                    orderStmt.close();
+                if (itemStmt != null)
+                    itemStmt.close();
                 if (conn != null) {
                     conn.setAutoCommit(true);
                     conn.close();
@@ -118,16 +101,14 @@ public class OrderDAO {
         }
     }
 
-    // ==================== READ OPERATIONS ====================
-
     // Get all orders
     public ObservableList<Order> getAllOrders() {
         ObservableList<Order> orders = FXCollections.observableArrayList();
         String sql = "SELECT * FROM orders ORDER BY order_date DESC";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 Order order = extractOrderFromResultSet(rs);
@@ -146,7 +127,7 @@ public class OrderDAO {
         String sql = "SELECT * FROM orders WHERE order_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, orderId);
             ResultSet rs = stmt.executeQuery();
@@ -160,60 +141,13 @@ public class OrderDAO {
         return null;
     }
 
-    // Get orders by customer
-    public ObservableList<Order> getOrdersByCustomer(int customerId) {
-        ObservableList<Order> orders = FXCollections.observableArrayList();
-        String sql = "SELECT * FROM orders WHERE customer_id = ? ORDER BY order_date DESC";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, customerId);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                Order order = extractOrderFromResultSet(rs);
-                if (order != null) {
-                    orders.add(order);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return orders;
-    }
-
-    // Get orders by date range
-    public ObservableList<Order> getOrdersByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
-        ObservableList<Order> orders = FXCollections.observableArrayList();
-        String sql = "SELECT * FROM orders WHERE order_date BETWEEN ? AND ? ORDER BY order_date DESC";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setTimestamp(1, Timestamp.valueOf(startDate));
-            stmt.setTimestamp(2, Timestamp.valueOf(endDate));
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                Order order = extractOrderFromResultSet(rs);
-                if (order != null) {
-                    orders.add(order);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return orders;
-    }
-
     // Get order items
     public List<OrderItem> getOrderItems(int orderId) {
         List<OrderItem> items = new ArrayList<>();
         String sql = "SELECT * FROM order_items WHERE order_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, orderId);
             ResultSet rs = stmt.executeQuery();
@@ -226,7 +160,6 @@ public class OrderDAO {
                 item.setPrice(rs.getDouble("price"));
                 item.setSubtotal(rs.getDouble("subtotal"));
 
-                // Get product details
                 int productId = rs.getInt("product_id");
                 Product product = productDAO.getProductById(productId);
                 item.setProduct(product);
@@ -239,14 +172,12 @@ public class OrderDAO {
         return items;
     }
 
-    // ==================== UPDATE OPERATIONS ====================
-
     // Update order status
     public boolean updateOrderStatus(int orderId, String status) {
         String sql = "UPDATE orders SET payment_status = ? WHERE order_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, status);
             stmt.setInt(2, orderId);
@@ -258,104 +189,39 @@ public class OrderDAO {
         }
     }
 
-    // Cancel order
-    public boolean cancelOrder(int orderId) {
-        Connection conn = null;
-        PreparedStatement stmt = null;
+    // Get today's sales
+    public double getTodaySales() {
+        String sql = "SELECT COALESCE(SUM(total), 0) FROM orders WHERE DATE(order_date) = CURDATE() AND payment_status = 'paid'";
 
-        try {
-            conn = DatabaseConnection.getConnection();
-            conn.setAutoCommit(false);
+        try (Connection conn = DatabaseConnection.getConnection();
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
-            // Get order items to restore stock
-            List<OrderItem> items = getOrderItems(orderId);
-
-            // Update order status
-            String sql = "UPDATE orders SET payment_status = 'cancelled' WHERE order_id = ?";
-            stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, orderId);
-            stmt.executeUpdate();
-
-            // Restore stock
-            for (OrderItem item : items) {
-                productDAO.updateStock(item.getProduct().getProductId(), item.getQuantity());
+            if (rs.next()) {
+                return rs.getDouble(1);
             }
-
-            conn.commit();
-            return true;
-
         } catch (SQLException e) {
             e.printStackTrace();
-            try {
-                if (conn != null) conn.rollback();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-            return false;
-        } finally {
-            try {
-                if (stmt != null) stmt.close();
-                if (conn != null) {
-                    conn.setAutoCommit(true);
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
+        return 0;
     }
 
-    // ==================== DELETE OPERATIONS ====================
+    // Get today's order count
+    public int getTodayOrderCount() {
+        String sql = "SELECT COUNT(*) FROM orders WHERE DATE(order_date) = CURDATE()";
 
-    // Delete order (use with caution!)
-    public boolean deleteOrder(int orderId) {
-        Connection conn = null;
-        PreparedStatement itemStmt = null;
-        PreparedStatement orderStmt = null;
+        try (Connection conn = DatabaseConnection.getConnection();
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
-        try {
-            conn = DatabaseConnection.getConnection();
-            conn.setAutoCommit(false);
-
-            // Delete order items first
-            String itemSql = "DELETE FROM order_items WHERE order_id = ?";
-            itemStmt = conn.prepareStatement(itemSql);
-            itemStmt.setInt(1, orderId);
-            itemStmt.executeUpdate();
-
-            // Delete order
-            String orderSql = "DELETE FROM orders WHERE order_id = ?";
-            orderStmt = conn.prepareStatement(orderSql);
-            orderStmt.setInt(1, orderId);
-
-            int affectedRows = orderStmt.executeUpdate();
-            conn.commit();
-
-            return affectedRows > 0;
-
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            try {
-                if (conn != null) conn.rollback();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-            return false;
-        } finally {
-            try {
-                if (itemStmt != null) itemStmt.close();
-                if (orderStmt != null) orderStmt.close();
-                if (conn != null) {
-                    conn.setAutoCommit(true);
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
+        return 0;
     }
-
-    // ==================== HELPER METHODS ====================
 
     // Extract order from ResultSet
     private Order extractOrderFromResultSet(ResultSet rs) throws SQLException {
@@ -363,14 +229,12 @@ public class OrderDAO {
         order.setOrderId(rs.getInt("order_id"));
         order.setOrderNumber(rs.getString("order_number"));
 
-        // Get customer
         int customerId = rs.getInt("customer_id");
         if (customerId > 0) {
             Customer customer = customerDAO.getCustomerById(customerId);
             order.setCustomer(customer);
         }
 
-        // Get user
         int userId = rs.getInt("user_id");
         if (userId > 0) {
             User user = userDAO.getUserById(userId);
@@ -386,62 +250,9 @@ public class OrderDAO {
         order.setPaymentStatus(rs.getString("payment_status"));
         order.setNotes(rs.getString("notes"));
 
-        // Load order items
         List<OrderItem> items = getOrderItems(order.getOrderId());
         order.setItems(items);
 
         return order;
-    }
-
-    // Generate unique order number
-    private String generateOrderNumber() {
-        String sql = "SELECT COUNT(*) FROM orders";
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            if (rs.next()) {
-                int count = rs.getInt(1) + 1;
-                return "ORD" + String.format("%06d", count);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return "ORD" + System.currentTimeMillis();
-    }
-
-    // Get today's sales total
-    public double getTodaySales() {
-        String sql = "SELECT COALESCE(SUM(total), 0) FROM orders " +
-                "WHERE DATE(order_date) = CURDATE() AND payment_status = 'paid'";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            if (rs.next()) {
-                return rs.getDouble(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    // Get order count today
-    public int getTodayOrderCount() {
-        String sql = "SELECT COUNT(*) FROM orders WHERE DATE(order_date) = CURDATE()";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
     }
 }

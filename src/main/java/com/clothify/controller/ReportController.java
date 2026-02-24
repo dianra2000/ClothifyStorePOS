@@ -1,10 +1,11 @@
 package com.clothify.controller;
 
-import com.clothify.util.ReportGenerator;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ComboBox;
+import com.clothify.util.ReportGenerator;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
@@ -17,15 +18,14 @@ public class ReportController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Set default dates
         startDatePicker.setValue(LocalDate.now().minusDays(30));
         endDatePicker.setValue(LocalDate.now());
 
-        // Report types
         reportTypeCombo.getItems().addAll(
                 "Sales Report",
                 "Inventory Report",
-                "Customer Report"
+                "Customer Report",
+                "Product Report"
         );
         reportTypeCombo.setValue("Sales Report");
     }
@@ -37,7 +37,7 @@ public class ReportController implements Initializable {
         LocalDate endDate = endDatePicker.getValue();
 
         if (startDate == null || endDate == null) {
-            // Show error
+            showAlert(Alert.AlertType.WARNING, "Warning", "Please select date range!");
             return;
         }
 
@@ -46,11 +46,19 @@ public class ReportController implements Initializable {
 
     @FXML
     private void handlePrintReport() {
-        // Implementation
+        showAlert(Alert.AlertType.INFORMATION, "Info", "Print feature coming soon!");
     }
 
     @FXML
     private void handleExportPDF() {
-        // Implementation
+        showAlert(Alert.AlertType.INFORMATION, "Info", "PDF export coming soon!");
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

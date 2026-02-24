@@ -33,7 +33,9 @@
 
         <!-- Left Side: Order Entry -->
         <VBox spacing="15">
-            <padding><Insets right="10" /></padding>
+            <padding>
+                <Insets right="10" />
+            </padding>
 
             <!-- Customer Selection -->
             <TitledPane text="1. Select Customer" expanded="true">
@@ -127,7 +129,9 @@
 
         <!-- Right Side: Order History -->
         <VBox spacing="15">
-            <padding><Insets left="10" /></padding>
+            <padding>
+                <Insets left="10" />
+            </padding>
             <Label text="Recent Orders" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
             <TableView fx:id="orderTable" VBox.vgrow="ALWAYS">
                 <columns>
@@ -146,5 +150,4 @@
         <Label text="Order Processing System - " />
         <Label text="Ready" style="-fx-font-weight: bold;" />
     </HBox>
-
 </VBox>

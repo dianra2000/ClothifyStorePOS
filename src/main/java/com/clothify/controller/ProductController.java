@@ -11,39 +11,62 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.GridPane;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ProductController implements Initializable {
 
-    @FXML private TextField searchField;
-    @FXML private TextField productCodeField;
-    @FXML private TextField productNameField;
-    @FXML private ComboBox<Category> categoryCombo;
-    @FXML private ComboBox<Supplier> supplierCombo;
-    @FXML private TextField sizeField;
-    @FXML private TextField colorField;
-    @FXML private TextField priceField;
-    @FXML private TextField costField;
-    @FXML private TextField quantityField;
-    @FXML private TextField reorderLevelField;
-    @FXML private TextArea descriptionArea;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private TextField productCodeField;
+    @FXML
+    private TextField productNameField;
+    @FXML
+    private ComboBox<Category> categoryCombo;
+    @FXML
+    private ComboBox<Supplier> supplierCombo;
+    @FXML
+    private TextField sizeField;
+    @FXML
+    private TextField colorField;
+    @FXML
+    private TextField priceField;
+    @FXML
+    private TextField costField;
+    @FXML
+    private TextField quantityField;
+    @FXML
+    private TextField reorderLevelField;
+    @FXML
+    private TextArea descriptionArea;
 
-    @FXML private TableView<Product> productTable;
-    @FXML private TableColumn<Product, String> colCode;
-    @FXML private TableColumn<Product, String> colName;
-    @FXML private TableColumn<Product, String> colCategory;
-    @FXML private TableColumn<Product, Double> colPrice;
-    @FXML private TableColumn<Product, Integer> colQuantity;
-    @FXML private TableColumn<Product, String> colStatus;
+    @FXML
+    private TableView<Product> productTable;
+    @FXML
+    private TableColumn<Product, String> colCode;
+    @FXML
+    private TableColumn<Product, String> colName;
+    @FXML
+    private TableColumn<Product, String> colCategory;
+    @FXML
+    private TableColumn<Product, Double> colPrice;
+    @FXML
+    private TableColumn<Product, Integer> colQuantity;
+    @FXML
+    private TableColumn<Product, String> colStatus;
 
-    @FXML private Button addButton;
-    @FXML private Button updateButton;
-    @FXML private Button deleteButton;
-    @FXML private Button clearButton;
-    @FXML private Label lowStockCountLabel;
+    @FXML
+    private Button addButton;
+    @FXML
+    private Button updateButton;
+    @FXML
+    private Button deleteButton;
+    @FXML
+    private Button clearButton;
+    @FXML
+    private Label lowStockCountLabel;
 
     private ProductDAO productDAO = new ProductDAO();
     private CategoryDAO categoryDAO = new CategoryDAO();
@@ -176,7 +199,8 @@ public class ProductController implements Initializable {
 
     @FXML
     private void handleAdd() {
-        if (!validateInputs()) return;
+        if (!validateInputs())
+            return;
 
         Product product = new Product();
         product.setProductCode(productCodeField.getText().trim());
@@ -211,7 +235,8 @@ public class ProductController implements Initializable {
             return;
         }
 
-        if (!validateInputs()) return;
+        if (!validateInputs())
+            return;
 
         selected.setProductName(productNameField.getText().trim());
         selected.setCategoryId(categoryCombo.getValue().getCategoryId());

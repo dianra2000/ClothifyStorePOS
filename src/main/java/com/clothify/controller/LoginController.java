@@ -1,8 +1,5 @@
 package com.clothify.controller;
 
-import com.clothify.dao.UserDAO;
-import com.clothify.model.User;
-import com.clothify.util.SessionManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,6 +8,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import com.clothify.dao.UserDAO;
+import com.clothify.model.User;
+import com.clothify.util.SessionManager;
 import java.io.IOException;
 
 public class LoginController {
@@ -31,20 +31,15 @@ public class LoginController {
         String username = usernameField.getText().trim();
         String password = passwordField.getText().trim();
 
-        // Validation
         if (username.isEmpty() || password.isEmpty()) {
             messageLabel.setText("Please enter username and password");
             return;
         }
 
-        // Authenticate user
         User user = userDAO.authenticate(username, password);
 
         if (user != null) {
-            // Set session
             SessionManager.getInstance().setCurrentUser(user);
-
-            // Load dashboard
             loadDashboard();
         } else {
             messageLabel.setText("Invalid username or password");

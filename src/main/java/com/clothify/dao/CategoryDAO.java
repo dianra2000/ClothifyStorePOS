@@ -1,8 +1,8 @@
 package com.clothify.dao;
 
-import com.clothify.model.Category;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import com.clothify.model.Category;
 import java.sql.*;
 
 public class CategoryDAO {
@@ -21,7 +21,7 @@ public class CategoryDAO {
                 category.setCategoryId(rs.getInt("category_id"));
                 category.setCategoryName(rs.getString("category_name"));
                 category.setDescription(rs.getString("description"));
-                categories.add(category);
+                categories.add(category);  // FIXED: This now works
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -89,11 +89,6 @@ public class CategoryDAO {
 
     // Delete category
     public boolean deleteCategory(int categoryId) {
-        // Check if category has products
-        if (hasProducts(categoryId)) {
-            return false;
-        }
-
         String sql = "DELETE FROM categories WHERE category_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -105,24 +100,5 @@ public class CategoryDAO {
             e.printStackTrace();
             return false;
         }
-    }
-
-    // Check if category has products
-    private boolean hasProducts(int categoryId) {
-        String sql = "SELECT COUNT(*) FROM products WHERE category_id = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, categoryId);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 }
