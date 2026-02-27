@@ -2,79 +2,112 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="400.0" prefWidth="600.0"
-            style="-fx-background-color: linear-gradient(to bottom right, #2c3e50, #3498db);"
+<AnchorPane prefHeight="520.0" prefWidth="860.0"
+            style="-fx-background-color: #0f172a;"
             xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.clothify.controller.LoginController">
 
     <children>
-        <!-- Login Box -->
-        <VBox alignment="CENTER" layoutX="150.0" layoutY="50.0"
-              prefHeight="300.0" prefWidth="300.0" spacing="20.0"
-              style="-fx-background-color: white; -fx-background-radius: 10;
-                     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 5);"
-              AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="150.0"
-              AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="50.0">
 
-            <children>
-                <Label text="Clothify Store" textFill="#2c3e50">
-                    <font>
-                        <Font name="System Bold" size="24.0" />
-                    </font>
-                </Label>
+        <!-- Left Banner Panel -->
+        <VBox prefWidth="440" prefHeight="520"
+              AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0"
+              AnchorPane.bottomAnchor="0"
+              style="-fx-background-color: linear-gradient(to bottom right, #1e3a5f, #0f172a);"
+              alignment="CENTER" spacing="20">
 
-                <Label text="Point of Sale System" textFill="#7f8c8d">
-                    <font>
-                        <Font size="14.0" />
-                    </font>
-                </Label>
+            <!-- Banner Image -->
+            <ImageView fitWidth="440" fitHeight="260" preserveRatio="false">
+                <image>
+                    <Image url="@../images/banner.png" />
+                </image>
+            </ImageView>
 
-                <TextField fx:id="usernameField" promptText="Username"
-                           style="-fx-background-radius: 5; -fx-border-radius: 5;
-                                  -fx-border-color: #bdc3c7; -fx-border-width: 1;">
-                    <VBox.margin>
-                        <Insets left="20.0" right="20.0" />
-                    </VBox.margin>
-                </TextField>
+            <Label text="Clothify Store" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;" />
+            <Label text="Premium Fashion · Point of Sale System"
+                   style="-fx-font-size: 13px; -fx-text-fill: #94a3b8;" />
 
-                <PasswordField fx:id="passwordField" promptText="Password"
-                               style="-fx-background-radius: 5; -fx-border-radius: 5;
-                                      -fx-border-color: #bdc3c7; -fx-border-width: 1;">
-                    <VBox.margin>
-                        <Insets left="20.0" right="20.0" />
-                    </VBox.margin>
-                </PasswordField>
+            <!-- Decorative line -->
+            <HBox alignment="CENTER" spacing="8" maxWidth="300">
+                <Label text="────────" style="-fx-text-fill: #f59e0b;" />
+                <Label text="*" style="-fx-text-fill: #f59e0b; -fx-font-size: 16px; -fx-font-weight: bold;" />
+                <Label text="────────" style="-fx-text-fill: #f59e0b;" />
+            </HBox>
 
-                <Button fx:id="loginButton" defaultButton="true"
-                        mnemonicParsing="false" onAction="#handleLogin"
-                        prefWidth="200.0"
-                        style="-fx-background-color: #3498db; -fx-background-radius: 5; -fx-text-fill: white;"
-                        text="Login">
-                    <font>
-                        <Font name="System Bold" size="14.0" />
-                    </font>
-                    <VBox.margin>
-                        <Insets top="10.0" />
-                    </VBox.margin>
-                </Button>
+            <Label text="Your trusted retail management solution"
+                   style="-fx-font-size: 12px; -fx-text-fill: #64748b;" />
+        </VBox>
 
-                <Label fx:id="messageLabel" textFill="#e74c3c" />
-            </children>
+        <!-- Right Login Panel -->
+        <VBox prefWidth="420" prefHeight="520"
+              AnchorPane.topAnchor="0" AnchorPane.rightAnchor="0"
+              AnchorPane.bottomAnchor="0"
+              style="-fx-background-color: white;"
+              alignment="CENTER" spacing="18">
+            <padding>
+                <Insets left="50" right="50" />
+            </padding>
+
+            <!-- Logo + Title -->
+            <ImageView fitWidth="64" fitHeight="64" preserveRatio="true">
+                <image>
+                    <Image url="@../images/logo.png" />
+                </image>
+            </ImageView>
+
+            <Label text="Welcome Back" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" />
+            <Label text="Sign in to your account" style="-fx-font-size: 13px; -fx-text-fill: #64748b;" />
+
+            <!-- Divider -->
+            <Separator prefWidth="320" />
+
+            <!-- Username -->
+            <VBox spacing="6" fillWidth="true">
+                <Label text="Username" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" />
+                <TextField fx:id="usernameField" promptText="Enter username"
+                           style="-fx-background-color: #f8fafc; -fx-background-radius: 8; -fx-border-radius: 8;
+                                  -fx-border-color: #e2e8f0; -fx-border-width: 1.5; -fx-padding: 10 14;
+                                  -fx-font-size: 13px;" />
+            </VBox>
+
+            <!-- Password -->
+            <VBox spacing="6" fillWidth="true">
+                <Label text="Password" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" />
+                <PasswordField fx:id="passwordField" promptText="Enter password"
+                               style="-fx-background-color: #f8fafc; -fx-background-radius: 8; -fx-border-radius: 8;
+                                      -fx-border-color: #e2e8f0; -fx-border-width: 1.5; -fx-padding: 10 14;
+                                      -fx-font-size: 13px;" />
+            </VBox>
+
+            <!-- Error Message -->
+            <Label fx:id="messageLabel" textFill="#ef4444" wrapText="true"
+                   style="-fx-font-size: 12px;" />
+
+            <!-- Login Button -->
+            <Button fx:id="loginButton" defaultButton="true"
+                    text="Sign In →" onAction="#handleLogin"
+                    prefWidth="320" prefHeight="44"
+                    style="-fx-background-color: linear-gradient(to right, #1e3a5f, #2563eb);
+                           -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;
+                           -fx-background-radius: 10; -fx-cursor: hand;" />
+
+            <Separator prefWidth="320" />
+
+            <Label text="© 2025 Clothify Store POS  |  v1.0"
+                   style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;" />
         </VBox>
 
         <!-- Close Button -->
-        <Button layoutX="560.0" layoutY="10.0" mnemonicParsing="false"
-                onAction="#handleClose"
-                style="-fx-background-color: transparent; -fx-text-fill: white;"
-                text="X" textFill="white">
-            <font>
-                <Font name="System Bold" size="14.0" />
-            </font>
-        </Button>
+        <Button layoutX="830" layoutY="10"
+                onAction="#handleClose" text="✕"
+                style="-fx-background-color: rgba(255,255,255,0.15); -fx-text-fill: white;
+                       -fx-background-radius: 50; -fx-font-size: 13px; -fx-cursor: hand;
+                       -fx-min-width: 28; -fx-min-height: 28;" />
+
     </children>
 </AnchorPane>

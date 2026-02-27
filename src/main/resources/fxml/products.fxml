@@ -13,12 +13,20 @@
     </padding>
 
     <!-- Header -->
-    <Label text="Product Management" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Product Management" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+        <Label fx:id="lowStockCountLabel" text="Low Stock Items: 0"
+               style="-fx-text-fill: green; -fx-font-weight: bold; -fx-font-size: 13px;" HBox.hgrow="ALWAYS" />
+    </HBox>
 
     <!-- Search -->
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Label text="Search:" />
         <TextField fx:id="searchField" promptText="Search products..." HBox.hgrow="ALWAYS" />
+        <Button text="Refresh" onAction="#handleRefresh"
+                style="-fx-background-color: #3498db; -fx-text-fill: white;" />
+        <Button text="Export" onAction="#handleExport"
+                style="-fx-background-color: #9b59b6; -fx-text-fill: white;" />
     </HBox>
 
     <!-- Product Table -->
@@ -29,6 +37,7 @@
             <TableColumn fx:id="colCategory" text="Category" prefWidth="120" />
             <TableColumn fx:id="colPrice" text="Price" prefWidth="100" />
             <TableColumn fx:id="colQuantity" text="Stock" prefWidth="80" />
+            <TableColumn fx:id="colStatus" text="Status" prefWidth="100" />
         </columns>
     </TableView>
 
@@ -41,35 +50,57 @@
 
             <columnConstraints>
                 <ColumnConstraints minWidth="100" />
-                <ColumnConstraints minWidth="200" />
+                <ColumnConstraints minWidth="200" hgrow="ALWAYS" />
                 <ColumnConstraints minWidth="100" />
-                <ColumnConstraints minWidth="200" />
+                <ColumnConstraints minWidth="200" hgrow="ALWAYS" />
             </columnConstraints>
 
+            <!-- Row 0 -->
             <Label text="Product Code:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
             <TextField fx:id="productCodeField" editable="false" GridPane.rowIndex="0" GridPane.columnIndex="1" />
 
             <Label text="Product Name:" GridPane.rowIndex="0" GridPane.columnIndex="2" />
             <TextField fx:id="productNameField" GridPane.rowIndex="0" GridPane.columnIndex="3" />
 
+            <!-- Row 1 -->
             <Label text="Category:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-            <ComboBox fx:id="categoryCombo" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+            <ComboBox fx:id="categoryCombo" GridPane.rowIndex="1" GridPane.columnIndex="1" maxWidth="Infinity" />
 
             <Label text="Supplier:" GridPane.rowIndex="1" GridPane.columnIndex="2" />
-            <ComboBox fx:id="supplierCombo" GridPane.rowIndex="1" GridPane.columnIndex="3" />
+            <ComboBox fx:id="supplierCombo" GridPane.rowIndex="1" GridPane.columnIndex="3" maxWidth="Infinity" />
 
-            <Label text="Price:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-            <TextField fx:id="priceField" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+            <!-- Row 2 -->
+            <Label text="Size:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+            <TextField fx:id="sizeField" GridPane.rowIndex="2" GridPane.columnIndex="1" />
 
-            <Label text="Quantity:" GridPane.rowIndex="2" GridPane.columnIndex="2" />
-            <TextField fx:id="quantityField" GridPane.rowIndex="2" GridPane.columnIndex="3" />
+            <Label text="Color:" GridPane.rowIndex="2" GridPane.columnIndex="2" />
+            <TextField fx:id="colorField" GridPane.rowIndex="2" GridPane.columnIndex="3" />
+
+            <!-- Row 3 -->
+            <Label text="Price ($):" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+            <TextField fx:id="priceField" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+
+            <Label text="Cost ($):" GridPane.rowIndex="3" GridPane.columnIndex="2" />
+            <TextField fx:id="costField" GridPane.rowIndex="3" GridPane.columnIndex="3" />
+
+            <!-- Row 4 -->
+            <Label text="Quantity:" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+            <TextField fx:id="quantityField" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+
+            <Label text="Reorder Level:" GridPane.rowIndex="4" GridPane.columnIndex="2" />
+            <TextField fx:id="reorderLevelField" GridPane.rowIndex="4" GridPane.columnIndex="3" />
+
+            <!-- Row 5 -->
+            <Label text="Description:" GridPane.rowIndex="5" GridPane.columnIndex="0" />
+            <TextArea fx:id="descriptionArea" GridPane.rowIndex="5" GridPane.columnIndex="1"
+                      GridPane.columnSpan="3" prefRowCount="3" wrapText="true" />
         </GridPane>
     </TitledPane>
 
     <!-- Buttons -->
     <HBox spacing="10" alignment="CENTER_RIGHT">
-        <Button fx:id="addButton" text="Add" onAction="#handleAdd"
-                style="-fx-background-color: #27ae60; -fx-text-fill: white;" />
+        <Button fx:id="addButton" text="Add Product" onAction="#handleAdd"
+                style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;" />
         <Button fx:id="updateButton" text="Update" onAction="#handleUpdate"
                 style="-fx-background-color: #f39c12; -fx-text-fill: white;" />
         <Button fx:id="deleteButton" text="Delete" onAction="#handleDelete"
@@ -77,4 +108,5 @@
         <Button fx:id="clearButton" text="Clear" onAction="#handleClear"
                 style="-fx-background-color: #95a5a6; -fx-text-fill: white;" />
     </HBox>
+
 </VBox>

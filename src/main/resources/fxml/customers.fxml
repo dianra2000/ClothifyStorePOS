@@ -27,7 +27,8 @@
             <TableColumn fx:id="colCode" text="Code" prefWidth="100" />
             <TableColumn fx:id="colName" text="Name" prefWidth="150" />
             <TableColumn fx:id="colPhone" text="Phone" prefWidth="120" />
-            <TableColumn fx:id="colEmail" text="Email" prefWidth="200" />
+            <TableColumn fx:id="colEmail" text="Email" prefWidth="180" />
+            <TableColumn fx:id="colCity" text="City" prefWidth="100" />
             <TableColumn fx:id="colPoints" text="Loyalty Points" prefWidth="100" />
         </columns>
     </TableView>

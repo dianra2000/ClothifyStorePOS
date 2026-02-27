@@ -32,15 +32,18 @@
     <SplitPane dividerPositions="0.6" VBox.vgrow="ALWAYS">
 
         <!-- Left Side: Order Entry -->
+        <ScrollPane fitToWidth="true"
+                    style="-fx-background: white; -fx-background-color: white; -fx-border-color: transparent;">
+        <content>
         <VBox spacing="15">
             <padding>
-                <Insets right="10" />
+                <Insets top="10" right="12" bottom="12" left="4" />
             </padding>
 
             <!-- Customer Selection -->
             <TitledPane text="1. Select Customer" expanded="true">
                 <HBox spacing="10" alignment="CENTER_LEFT">
-                    <ComboBox fx:id="customerCombo" promptText="Select Customer" HBox.hgrow="ALWAYS" />
+                    <ComboBox fx:id="customerCombo" promptText="Select Customer" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
                     <Button fx:id="newCustomerButton" text="New Customer" onAction="#handleNewCustomer"
                             style="-fx-background-color: #27ae60; -fx-text-fill: white;" />
                 </HBox>
@@ -89,13 +92,13 @@
                         </columnConstraints>
 
                         <Label text="Subtotal:" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold;" />
-                        <Label fx:id="subtotalLabel" text="$0.00" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                        <Label fx:id="subtotalLabel" text="0.00" GridPane.rowIndex="0" GridPane.columnIndex="1" />
 
                         <Label text="Tax (10%):" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;" />
-                        <Label fx:id="taxLabel" text="$0.00" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                        <Label fx:id="taxLabel" text="0.00" GridPane.rowIndex="1" GridPane.columnIndex="1" />
 
                         <Label text="Total:" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
-                        <Label fx:id="totalLabel" text="$0.00" GridPane.rowIndex="2" GridPane.columnIndex="1"
+                        <Label fx:id="totalLabel" text="0.00" GridPane.rowIndex="2" GridPane.columnIndex="1"
                                style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #27ae60;" />
                     </GridPane>
                 </VBox>
@@ -119,13 +122,19 @@
             </TitledPane>
 
             <!-- Action Buttons -->
-            <HBox spacing="10" alignment="CENTER_RIGHT">
+            <HBox spacing="12" alignment="CENTER_RIGHT">
                 <Button fx:id="clearCartButton" text="Clear Cart" onAction="#handleClearCart"
-                        style="-fx-background-color: #e74c3c; -fx-text-fill: white;" />
+                        style="-fx-background-color: #ef4444; -fx-text-fill: white;
+                               -fx-font-weight: bold; -fx-background-radius: 7;
+                               -fx-padding: 9 20; -fx-cursor: hand; -fx-font-size: 13px;" />
                 <Button fx:id="processOrderButton" text="Process Order" onAction="#handleProcessOrder"
-                        style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 150px;" />
+                        style="-fx-background-color: #16a34a; -fx-text-fill: white;
+                               -fx-font-weight: bold; -fx-background-radius: 7;
+                               -fx-padding: 9 24; -fx-cursor: hand; -fx-font-size: 13px;" />
             </HBox>
         </VBox>
+        </content>
+        </ScrollPane>
 
         <!-- Right Side: Order History -->
         <VBox spacing="15">

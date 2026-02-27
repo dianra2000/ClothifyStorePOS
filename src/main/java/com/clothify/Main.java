@@ -32,6 +32,7 @@ public class Main extends Application {
             });
 
             Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
             primaryStage.setTitle("Clothify Store POS - Login");
             primaryStage.setScene(scene);
             primaryStage.initStyle(StageStyle.UNDECORATED);

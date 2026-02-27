@@ -2,135 +2,362 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mainPane" prefHeight="700.0" prefWidth="1200.0"
-            style="-fx-background-color: #ecf0f1;"
+<BorderPane fx:id="mainPane" prefHeight="720.0" prefWidth="1280.0"
+            style="-fx-background-color: #f1f5f9;"
             xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.clothify.controller.DashboardController">
 
-    <!-- Top Bar -->
+    <!-- ═══ TOP HEADER ═══ -->
     <top>
-        <HBox alignment="CENTER_LEFT" prefHeight="60.0" style="-fx-background-color: #2c3e50;">
-            <children>
-                <Label text="Clothify Store POS" textFill="white">
-                    <font>
-                        <Font name="System Bold" size="20.0" />
-                    </font>
-                    <HBox.margin>
-                        <Insets left="20.0" />
-                    </HBox.margin>
-                </Label>
+        <HBox alignment="CENTER_LEFT" prefHeight="68"
+              style="-fx-background-color: white;
+                     -fx-border-color: #e2e8f0; -fx-border-width: 0 0 1 0;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
+            <padding><Insets left="24" right="24" /></padding>
 
-                <Region HBox.hgrow="ALWAYS" />
+            <!-- Logo + Brand -->
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <ImageView fitWidth="42" fitHeight="42" preserveRatio="true">
+                    <image><Image url="@../images/logo.png" /></image>
+                </ImageView>
+                <VBox alignment="CENTER_LEFT" spacing="1">
+                    <Label text="Clothify Store POS"
+                           style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" />
+                    <Label text="Premium Fashion Management"
+                           style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;" />
+                </VBox>
+            </HBox>
 
-                <VBox alignment="CENTER_RIGHT">
-                    <children>
-                        <Label fx:id="userLabel" text="Welcome, User" textFill="white">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Label>
-                        <Label fx:id="roleLabel" text="Role: Staff" textFill="#bdc3c7">
-                            <font>
-                                <Font size="12.0" />
-                            </font>
-                        </Label>
-                    </children>
-                    <HBox.margin>
-                        <Insets right="20.0" />
-                    </HBox.margin>
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Center Badge -->
+            <Label text="Point of Sale System"
+                   style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #0369a1;
+                          -fx-background-color: #f0f9ff; -fx-background-radius: 6;
+                          -fx-border-color: #bae6fd; -fx-border-radius: 6; -fx-border-width: 1;
+                          -fx-padding: 5 14;" />
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <!-- User Info + Logout -->
+            <HBox alignment="CENTER" spacing="14">
+                <VBox alignment="CENTER_RIGHT" spacing="2">
+                    <Label fx:id="userLabel" text="Welcome, User"
+                           style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" />
+                    <Label fx:id="roleLabel" text="Role: STAFF"
+                           style="-fx-font-size: 11px; -fx-text-fill: #64748b;" />
                 </VBox>
 
-                <Button onAction="#handleLogout"
-                        style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 5;"
-                        text="Logout">
-                    <HBox.margin>
-                        <Insets right="20.0" />
-                    </HBox.margin>
-                </Button>
-            </children>
+                <Button onAction="#handleLogout" text="Sign Out"
+                        style="-fx-background-color: #ef4444; -fx-text-fill: white;
+                               -fx-font-weight: bold; -fx-font-size: 12px;
+                               -fx-background-radius: 7; -fx-padding: 8 16; -fx-cursor: hand;" />
+            </HBox>
         </HBox>
     </top>
 
-    <!-- Left Sidebar Menu -->
+    <!-- ═══ LEFT SIDEBAR ═══ -->
     <left>
-        <VBox prefWidth="200.0" style="-fx-background-color: #34495e;" spacing="5">
-            <padding>
-                <Insets top="20.0" />
-            </padding>
+        <VBox prefWidth="230"
+              style="-fx-background-color: #0f172a;"
+              spacing="2">
+            <padding><Insets top="28" bottom="24" left="14" right="14" /></padding>
 
-            <children>
-                <Label text="MAIN MENU" textFill="#bdc3c7" alignment="CENTER">
-                    <font>
-                        <Font size="12.0" />
-                    </font>
-                    <VBox.margin>
-                        <Insets left="10.0" bottom="10.0" />
-                    </VBox.margin>
-                </Label>
+            <!-- Section Label -->
+            <Label text="MAIN MENU"
+                   style="-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: #334155;
+                          -fx-padding: 0 0 10 6;" />
 
-                <Button onAction="#showProducts"
-                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER-LEFT;"
-                        prefWidth="200.0" prefHeight="40.0">
-                    <graphic>
-                        <Label text="📦 Products" textFill="white" />
-                    </graphic>
-                </Button>
+            <!-- Home Button -->
+            <Button fx:id="navHome" onAction="#showDashboardHome" prefWidth="202" prefHeight="48"
+                    style="-fx-background-color: linear-gradient(to right, #1d4ed8, #2563eb);
+                           -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;
+                           -fx-alignment: CENTER-LEFT; -fx-padding: 12 18;
+                           -fx-cursor: hand; -fx-background-radius: 10;
+                           -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.4), 8, 0, 0, 2);"
+                    text="  Home" />
 
-                <Button onAction="#showOrders"
-                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER-LEFT;"
-                        prefWidth="200.0" prefHeight="40.0">
-                    <graphic>
-                        <Label text="🛒 Orders" textFill="white" />
-                    </graphic>
-                </Button>
+            <Label text="" style="-fx-padding: 2 0;" />
 
-                <Button onAction="#showCustomers"
-                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER-LEFT;"
-                        prefWidth="200.0" prefHeight="40.0">
-                    <graphic>
-                        <Label text="👥 Customers" textFill="white" />
-                    </graphic>
-                </Button>
+            <!-- Products Button -->
+            <Button fx:id="navProducts" onAction="#showProducts" prefWidth="202" prefHeight="48"
+                    style="-fx-background-color: transparent; -fx-text-fill: #94a3b8;
+                           -fx-font-size: 13px; -fx-alignment: CENTER-LEFT;
+                           -fx-padding: 12 18; -fx-cursor: hand; -fx-background-radius: 10;"
+                    text="  Products" />
 
-                <Button onAction="#showReports"
-                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-alignment: CENTER-LEFT;"
-                        prefWidth="200.0" prefHeight="40.0">
-                    <graphic>
-                        <Label text="📊 Reports" textFill="white" />
-                    </graphic>
-                </Button>
-            </children>
+            <!-- Orders Button -->
+            <Button fx:id="navOrders" onAction="#showOrders" prefWidth="202" prefHeight="48"
+                    style="-fx-background-color: transparent; -fx-text-fill: #94a3b8;
+                           -fx-font-size: 13px; -fx-alignment: CENTER-LEFT;
+                           -fx-padding: 12 18; -fx-cursor: hand; -fx-background-radius: 10;"
+                    text="  Orders" />
+
+            <!-- Customers Button -->
+            <Button fx:id="navCustomers" onAction="#showCustomers" prefWidth="202" prefHeight="48"
+                    style="-fx-background-color: transparent; -fx-text-fill: #94a3b8;
+                           -fx-font-size: 13px; -fx-alignment: CENTER-LEFT;
+                           -fx-padding: 12 18; -fx-cursor: hand; -fx-background-radius: 10;"
+                    text="  Customers" />
+
+            <!-- Reports Button -->
+            <Button fx:id="navReports" onAction="#showReports" prefWidth="202" prefHeight="48"
+                    style="-fx-background-color: transparent; -fx-text-fill: #94a3b8;
+                           -fx-font-size: 13px; -fx-alignment: CENTER-LEFT;
+                           -fx-padding: 12 18; -fx-cursor: hand; -fx-background-radius: 10;"
+                    text="  Reports" />
+
+            <Region VBox.vgrow="ALWAYS" />
+
+            <!-- Sidebar footer card -->
+            <VBox alignment="CENTER" spacing="6"
+                  style="-fx-background-color: #1e293b; -fx-background-radius: 12;
+                         -fx-padding: 16;">
+                <ImageView fitWidth="44" fitHeight="44" preserveRatio="true">
+                    <image><Image url="@../images/logo.png" /></image>
+                </ImageView>
+                <Label text="Clothify Store"
+                       style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #e2e8f0;" />
+                <Label text="v1.0  |  2025"
+                       style="-fx-font-size: 10px; -fx-text-fill: #475569;" />
+            </VBox>
         </VBox>
     </left>
 
-    <!-- Center Content Area -->
+    <!-- ═══ CENTER CONTENT ═══ -->
     <center>
-        <StackPane style="-fx-background-color: white;">
-            <Label text="Welcome to Clothify Store POS"
-                   style="-fx-font-size: 24px; -fx-text-fill: #34495e;" />
+        <StackPane fx:id="contentArea" style="-fx-background-color: #f1f5f9;">
+
+            <ScrollPane fitToWidth="true" style="-fx-background: #f1f5f9; -fx-background-color: #f1f5f9;
+                                                  -fx-border-color: transparent;">
+                <content>
+                    <VBox spacing="0" style="-fx-background-color: #f1f5f9;">
+
+                        <!-- ── Hero Banner ── -->
+                        <StackPane prefHeight="220">
+                            <ImageView fitWidth="1060" fitHeight="220" preserveRatio="false">
+                                <image><Image url="@../images/banner.png" /></image>
+                            </ImageView>
+                            <!-- Overlay -->
+                            <VBox alignment="CENTER_LEFT" spacing="8"
+                                  style="-fx-background-color: rgba(15,23,42,0.62);">
+                                <padding><Insets left="48" /></padding>
+                                <Label text="Welcome to Clothify Store POS"
+                                       style="-fx-font-size: 30px; -fx-font-weight: bold;
+                                              -fx-text-fill: white;" />
+                                <Label text="Manage your fashion retail business with ease and elegance."
+                                       style="-fx-font-size: 14px; -fx-text-fill: #cbd5e1;" />
+                                <HBox spacing="12">
+                                    <VBox.margin><Insets top="8" /></VBox.margin>
+                                    <Button onAction="#showOrders" text="New Order"
+                                            style="-fx-background-color: linear-gradient(to right, #f59e0b, #d97706);
+                                                   -fx-text-fill: white; -fx-font-weight: bold;
+                                                   -fx-background-radius: 8; -fx-padding: 9 20;
+                                                   -fx-cursor: hand; -fx-font-size: 13px;" />
+                                    <Button onAction="#showProducts" text="View Products"
+                                            style="-fx-background-color: rgba(255,255,255,0.15);
+                                                   -fx-text-fill: white; -fx-font-weight: bold;
+                                                   -fx-background-radius: 8; -fx-padding: 9 20;
+                                                   -fx-cursor: hand; -fx-font-size: 13px;
+                                                   -fx-border-color: rgba(255,255,255,0.4);
+                                                   -fx-border-radius: 8; -fx-border-width: 1;" />
+                                </HBox>
+                            </VBox>
+                        </StackPane>
+
+                        <!-- ── Quick Stats Row ── -->
+                        <HBox spacing="16" style="-fx-background-color: #f1f5f9;">
+                            <padding><Insets top="24" left="24" right="24" bottom="8" /></padding>
+
+                            <!-- Stat 1 -->
+                            <VBox spacing="4" prefWidth="230" prefHeight="90" alignment="CENTER_LEFT"
+                                  style="-fx-background-color: white; -fx-background-radius: 14;
+                                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 8, 0, 0, 2);">
+                                <padding><Insets top="18" left="20" right="20" bottom="18" /></padding>
+                                <HBox spacing="12" alignment="CENTER_LEFT">
+                                    <StackPane prefWidth="44" prefHeight="44"
+                                               style="-fx-background-color: #dbeafe; -fx-background-radius: 12;">
+                                        <Label text="P" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #2563eb;" />
+                                    </StackPane>
+                                    <VBox spacing="2">
+                                        <Label text="Products" style="-fx-font-size: 12px; -fx-text-fill: #64748b;" />
+                                        <Label text="Manage Stock" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" />
+                                    </VBox>
+                                </HBox>
+                            </VBox>
+
+                            <!-- Stat 2 -->
+                            <VBox spacing="4" prefWidth="230" prefHeight="90" alignment="CENTER_LEFT"
+                                  style="-fx-background-color: white; -fx-background-radius: 14;
+                                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 8, 0, 0, 2);">
+                                <padding><Insets top="18" left="20" right="20" bottom="18" /></padding>
+                                <HBox spacing="12" alignment="CENTER_LEFT">
+                                    <StackPane prefWidth="44" prefHeight="44"
+                                               style="-fx-background-color: #dcfce7; -fx-background-radius: 12;">
+                                        <Label text="O" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #16a34a;" />
+                                    </StackPane>
+                                    <VBox spacing="2">
+                                        <Label text="Orders" style="-fx-font-size: 12px; -fx-text-fill: #64748b;" />
+                                        <Label text="Process Sales" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" />
+                                    </VBox>
+                                </HBox>
+                            </VBox>
+
+                            <!-- Stat 3 -->
+                            <VBox spacing="4" prefWidth="230" prefHeight="90" alignment="CENTER_LEFT"
+                                  style="-fx-background-color: white; -fx-background-radius: 14;
+                                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 8, 0, 0, 2);">
+                                <padding><Insets top="18" left="20" right="20" bottom="18" /></padding>
+                                <HBox spacing="12" alignment="CENTER_LEFT">
+                                    <StackPane prefWidth="44" prefHeight="44"
+                                               style="-fx-background-color: #fef3c7; -fx-background-radius: 12;">
+                                        <Label text="C" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #d97706;" />
+                                    </StackPane>
+                                    <VBox spacing="2">
+                                        <Label text="Customers" style="-fx-font-size: 12px; -fx-text-fill: #64748b;" />
+                                        <Label text="Manage Clients" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" />
+                                    </VBox>
+                                </HBox>
+                            </VBox>
+
+                            <!-- Stat 4 -->
+                            <VBox spacing="4" prefWidth="230" prefHeight="90" alignment="CENTER_LEFT"
+                                  style="-fx-background-color: white; -fx-background-radius: 14;
+                                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 8, 0, 0, 2);">
+                                <padding><Insets top="18" left="20" right="20" bottom="18" /></padding>
+                                <HBox spacing="12" alignment="CENTER_LEFT">
+                                    <StackPane prefWidth="44" prefHeight="44"
+                                               style="-fx-background-color: #f3e8ff; -fx-background-radius: 12;">
+                                        <Label text="R" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #9333ea;" />
+                                    </StackPane>
+                                    <VBox spacing="2">
+                                        <Label text="Reports" style="-fx-font-size: 12px; -fx-text-fill: #64748b;" />
+                                        <Label text="View Analytics" style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" />
+                                    </VBox>
+                                </HBox>
+                            </VBox>
+                        </HBox>
+
+                        <!-- ── Section title ── -->
+                        <HBox>
+                            <padding><Insets top="28" left="24" bottom="12" /></padding>
+                            <Label text="Quick Actions"
+                                   style="-fx-font-size: 17px; -fx-font-weight: bold; -fx-text-fill: #1e293b;" />
+                        </HBox>
+
+                        <!-- ── Action Cards Grid ── -->
+                        <HBox spacing="16">
+                            <padding><Insets left="24" right="24" bottom="32" /></padding>
+
+                            <!-- Products Card -->
+                            <VBox spacing="12" prefWidth="234" prefHeight="160" alignment="TOP_LEFT"
+                                  onMouseClicked="#showProductsClick"
+                                  style="-fx-background-color: linear-gradient(to bottom right, #1d4ed8, #3b82f6);
+                                         -fx-background-radius: 16; -fx-cursor: hand;
+                                         -fx-effect: dropshadow(gaussian, rgba(29,78,216,0.35), 12, 0, 0, 4);">
+                                <padding><Insets top="22" left="22" right="22" bottom="22" /></padding>
+                                <StackPane prefWidth="48" prefHeight="48"
+                                           style="-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 12;">
+                                    <Label text="P" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                                </StackPane>
+                                <Label text="Products"
+                                       style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                                <Label text="Manage your entire product inventory"
+                                       style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.75); -fx-wrap-text: true;" />
+                                <Region VBox.vgrow="ALWAYS" />
+                                <Label text="Open Products →"
+                                       style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: rgba(255,255,255,0.9);" />
+                            </VBox>
+
+                            <!-- Orders Card -->
+                            <VBox spacing="12" prefWidth="234" prefHeight="160" alignment="TOP_LEFT"
+                                  onMouseClicked="#showOrdersClick"
+                                  style="-fx-background-color: linear-gradient(to bottom right, #059669, #10b981);
+                                         -fx-background-radius: 16; -fx-cursor: hand;
+                                         -fx-effect: dropshadow(gaussian, rgba(5,150,105,0.35), 12, 0, 0, 4);">
+                                <padding><Insets top="22" left="22" right="22" bottom="22" /></padding>
+                                <StackPane prefWidth="48" prefHeight="48"
+                                           style="-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 12;">
+                                    <Label text="O" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                                </StackPane>
+                                <Label text="Orders"
+                                       style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                                <Label text="Process customer orders and sales"
+                                       style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.75); -fx-wrap-text: true;" />
+                                <Region VBox.vgrow="ALWAYS" />
+                                <Label text="Open Orders →"
+                                       style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: rgba(255,255,255,0.9);" />
+                            </VBox>
+
+                            <!-- Customers Card -->
+                            <VBox spacing="12" prefWidth="234" prefHeight="160" alignment="TOP_LEFT"
+                                  onMouseClicked="#showCustomersClick"
+                                  style="-fx-background-color: linear-gradient(to bottom right, #d97706, #f59e0b);
+                                         -fx-background-radius: 16; -fx-cursor: hand;
+                                         -fx-effect: dropshadow(gaussian, rgba(217,119,6,0.35), 12, 0, 0, 4);">
+                                <padding><Insets top="22" left="22" right="22" bottom="22" /></padding>
+                                <StackPane prefWidth="48" prefHeight="48"
+                                           style="-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 12;">
+                                    <Label text="C" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                                </StackPane>
+                                <Label text="Customers"
+                                       style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                                <Label text="View and manage your customer base"
+                                       style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.75); -fx-wrap-text: true;" />
+                                <Region VBox.vgrow="ALWAYS" />
+                                <Label text="Open Customers →"
+                                       style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: rgba(255,255,255,0.9);" />
+                            </VBox>
+
+                            <!-- Reports Card -->
+                            <VBox spacing="12" prefWidth="234" prefHeight="160" alignment="TOP_LEFT"
+                                  onMouseClicked="#showReportsClick"
+                                  style="-fx-background-color: linear-gradient(to bottom right, #7c3aed, #9333ea);
+                                         -fx-background-radius: 16; -fx-cursor: hand;
+                                         -fx-effect: dropshadow(gaussian, rgba(124,58,237,0.35), 12, 0, 0, 4);">
+                                <padding><Insets top="22" left="22" right="22" bottom="22" /></padding>
+                                <StackPane prefWidth="48" prefHeight="48"
+                                           style="-fx-background-color: rgba(255,255,255,0.2); -fx-background-radius: 12;">
+                                    <Label text="R" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                                </StackPane>
+                                <Label text="Reports"
+                                       style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                                <Label text="Generate reports and view analytics"
+                                       style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.75); -fx-wrap-text: true;" />
+                                <Region VBox.vgrow="ALWAYS" />
+                                <Label text="Open Reports →"
+                                       style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: rgba(255,255,255,0.9);" />
+                            </VBox>
+
+                        </HBox>
+                    </VBox>
+                </content>
+            </ScrollPane>
+
         </StackPane>
     </center>
 
-    <!-- Bottom Status Bar -->
+    <!-- ═══ BOTTOM STATUS BAR ═══ -->
     <bottom>
-        <HBox prefHeight="30.0" style="-fx-background-color: #bdc3c7;" alignment="CENTER_LEFT">
-            <children>
-                <Label text=" Status: Connected" textFill="#2c3e50">
-                    <HBox.margin>
-                        <Insets left="10.0" />
-                    </HBox.margin>
-                </Label>
-                <Region HBox.hgrow="ALWAYS" />
-                <Label text="Clothify Store v1.0" textFill="#2c3e50">
-                    <HBox.margin>
-                        <Insets right="10.0" />
-                    </HBox.margin>
-                </Label>
-            </children>
+        <HBox prefHeight="34" alignment="CENTER_LEFT"
+              style="-fx-background-color: #0f172a;
+                     -fx-border-color: #1e293b; -fx-border-width: 1 0 0 0;">
+            <padding><Insets left="24" right="24" /></padding>
+
+            <Label text="●" style="-fx-font-size: 10px; -fx-text-fill: #22c55e;" />
+            <Label text=" Connected  |  Database Active"
+                   style="-fx-font-size: 11px; -fx-text-fill: #64748b;" />
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <Label text="Clothify Store POS  v1.0  |  © 2025 All Rights Reserved"
+                   style="-fx-font-size: 11px; -fx-text-fill: #334155;" />
         </HBox>
     </bottom>
+
 </BorderPane>

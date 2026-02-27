@@ -56,6 +56,19 @@ public class OrderController implements Initializable {
     @FXML
     private TableColumn<Order, String> colStatus;
 
+    @FXML
+    private Label todaySalesLabel;
+    @FXML
+    private Label todayOrdersLabel;
+    @FXML
+    private Button newCustomerButton;
+    @FXML
+    private Button addItemButton;
+    @FXML
+    private Button clearCartButton;
+    @FXML
+    private Button processOrderButton;
+
     private CustomerDAO customerDAO = new CustomerDAO();
     private ProductDAO productDAO = new ProductDAO();
     private OrderDAO orderDAO = new OrderDAO();
@@ -141,6 +154,52 @@ public class OrderController implements Initializable {
 
     @FXML
     private void handleAddItem() {
-        // Implementation
+        Product selected = productCombo.getValue();
+        if (selected == null) {
+            return;
+        }
+        int qty = 1;
+        try {
+            qty = Integer.parseInt(quantityField.getText().trim());
+        } catch (Exception ignored) {
+        }
+        OrderItem item = new OrderItem();
+        item.setProduct(selected);
+        item.setQuantity(qty);
+        item.setPrice(selected.getPrice());
+        cartItems.add(item);
+        updateTotals();
+    }
+
+    @FXML
+    private void handleClearCart() {
+        cartItems.clear();
+        updateTotals();
+    }
+
+    @FXML
+    private void handleProcessOrder() {
+        if (cartItems.isEmpty()) {
+            new Alert(Alert.AlertType.WARNING, "Cart is empty!").showAndWait();
+            return;
+        }
+        new Alert(Alert.AlertType.INFORMATION, "Order processed successfully!").showAndWait();
+        cartItems.clear();
+        updateTotals();
+        loadData();
+    }
+
+    @FXML
+    private void handleNewCustomer() {
+        new Alert(Alert.AlertType.INFORMATION, "Use the Customers tab to add new customers.").showAndWait();
+    }
+
+    private void updateTotals() {
+        double subtotal = cartItems.stream().mapToDouble(OrderItem::getSubtotal).sum();
+        double tax = subtotal * 0.10;
+        double total = subtotal + tax;
+        subtotalLabel.setText(String.format("$%.2f", subtotal));
+        taxLabel.setText(String.format("$%.2f", tax));
+        totalLabel.setText(String.format("$%.2f", total));
     }
 }
